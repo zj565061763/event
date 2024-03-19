@@ -34,21 +34,18 @@ object FEvent {
      * 返回事件[clazz]对应的[Flow]
      */
     fun <T> flow(clazz: Class<T>): Flow<T> {
-        synchronized(this@FEvent) {
+        return synchronized(this@FEvent) {
+            releaseRef()
             @Suppress("UNCHECKED_CAST")
-            val flow = (_flows[clazz]?.get() as? MutableSharedFlow<T>) ?: kotlin.run {
-                releaseRef()
-                MutableSharedFlow<T>().also { instance ->
-                    _flows[clazz] = WeakRef(
-                        referent = instance,
-                        queue = _refQueue,
-                        clazz = clazz,
-                    )
-                    logMsg { "+++++ ${clazz.name} size:${_flows.size}" }
-                }
+            (_flows[clazz]?.get() as? MutableSharedFlow<T>) ?: MutableSharedFlow<T>().also { instance ->
+                _flows[clazz] = WeakRef(
+                    referent = instance,
+                    queue = _refQueue,
+                    clazz = clazz,
+                )
+                logMsg { "+++++ ${clazz.name} size:${_flows.size}" }
             }
-            return flow.asSharedFlow()
-        }
+        }.asSharedFlow()
     }
 
     private fun releaseRef() {
