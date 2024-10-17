@@ -18,60 +18,60 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class EventTest {
 
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(StandardTestDispatcher())
-    }
+   @Before
+   fun setUp() {
+      Dispatchers.setMain(StandardTestDispatcher())
+   }
 
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
+   @After
+   fun tearDown() {
+      Dispatchers.resetMain()
+   }
 
-    @Test
-    fun testFlow() = runTest {
-        FEvent.flow(TestEvent::class.java).test {
-            val repeat = 5
-            repeat(repeat) {
-                FEvent.post(TestEvent())
-            }
-            repeat(repeat) {
-                assertEquals(TestEvent(), awaitItem())
-            }
-        }
-    }
+   @Test
+   fun testFlow() = runTest {
+      FEvent.flow(TestEvent::class.java).test {
+         val repeat = 5
+         repeat(repeat) {
+            FEvent.post(TestEvent())
+         }
+         repeat(repeat) {
+            assertEquals(TestEvent(), awaitItem())
+         }
+      }
+   }
 
-    @Test
-    fun testObserver() = runTest {
-        val repeat = 5
-        var count = 0
+   @Test
+   fun testObserver() = runTest {
+      val repeat = 5
+      var count = 0
 
-        val observer = object : FEventObserver<TestEvent>(TestEvent::class.java) {
-            override fun onEvent(event: TestEvent) {
-                count++
-            }
-        }
+      val observer = object : FEventObserver<TestEvent>(TestEvent::class.java) {
+         override fun onEvent(event: TestEvent) {
+            count++
+         }
+      }
 
-        kotlin.run {
-            observer.register()
-            repeat(repeat) {
-                FEvent.post(TestEvent())
-            }
-            advanceUntilIdle()
-            assertEquals(repeat, count)
-        }
+      kotlin.run {
+         observer.register()
+         repeat(repeat) {
+            FEvent.post(TestEvent())
+         }
+         advanceUntilIdle()
+         assertEquals(repeat, count)
+      }
 
-        kotlin.run {
-            observer.unregister()
-            repeat(repeat) {
-                FEvent.post(TestEvent())
-            }
-            advanceUntilIdle()
-            assertEquals(repeat, count)
-        }
-    }
+      kotlin.run {
+         observer.unregister()
+         repeat(repeat) {
+            FEvent.post(TestEvent())
+         }
+         advanceUntilIdle()
+         assertEquals(repeat, count)
+      }
+   }
 }
 
 private data class TestEvent(
-    val name: String = "Tom"
+   val name: String = "Tom",
 )

@@ -3,6 +3,7 @@
 [![](https://jitpack.io/v/zj565061763/event.svg)](https://jitpack.io/#zj565061763/event)
 
 # Post Event
+
 ```kotlin
 // post event
 FEvent.post(Event())
