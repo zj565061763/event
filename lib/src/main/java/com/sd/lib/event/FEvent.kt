@@ -36,9 +36,9 @@ object FEvent {
       return synchronized(this@FEvent) {
          releaseRef()
          @Suppress("UNCHECKED_CAST")
-         (_flows[clazz]?.get() as? MutableSharedFlow<T>) ?: MutableSharedFlow<T>().also { instance ->
+         (_flows[clazz]?.get() as? MutableSharedFlow<T>) ?: MutableSharedFlow<T>().also { flow ->
             _flows[clazz] = WeakRef(
-               referent = instance,
+               referent = flow,
                queue = _refQueue,
                clazz = clazz,
             )
