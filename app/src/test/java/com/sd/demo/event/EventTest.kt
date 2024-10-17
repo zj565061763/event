@@ -3,30 +3,17 @@ package com.sd.demo.event
 import app.cash.turbine.test
 import com.sd.lib.event.FEvent
 import com.sd.lib.event.FEventObserver
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class EventTest {
-
-   @Before
-   fun setUp() {
-      Dispatchers.setMain(StandardTestDispatcher())
-   }
-
-   @After
-   fun tearDown() {
-      Dispatchers.resetMain()
-   }
+   @get:Rule
+   val mainDispatcherRule = MainDispatcherRule()
 
    @Test
    fun testFlow() = runTest {
