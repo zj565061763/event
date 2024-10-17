@@ -13,9 +13,9 @@ FEvent.post(Event())
 
 ```kotlin
 lifecycleScope.launch {
-    FEvent.flow(Event::class.java).collect { event ->
-        logMsg { "onEvent $event" }
-    }
+   FEvent.flow(Event::class.java).collect { event ->
+      logMsg { "onEvent $event" }
+   }
 }
 ```
 
@@ -23,9 +23,9 @@ lifecycleScope.launch {
 
 ```kotlin
 private val _observer = object : FEventObserver<Event>(Event::class.java) {
-    override fun onEvent(event: Event) {
-        logMsg { "onEvent $event" }
-    }
+   override fun onEvent(event: Event) {
+      logMsg { "onEvent $event" }
+   }
 }
 
 // register observer
