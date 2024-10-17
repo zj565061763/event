@@ -57,9 +57,9 @@ object FEvent {
    }
 
    private class WeakRef<T>(
-      val clazz: Class<*>,
       referent: T,
       queue: ReferenceQueue<in T>,
+      val clazz: Class<*>,
    ) : WeakReference<T>(referent, queue)
 }
 
