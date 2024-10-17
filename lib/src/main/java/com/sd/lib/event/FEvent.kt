@@ -10,8 +10,8 @@ import java.lang.ref.ReferenceQueue
 import java.lang.ref.WeakReference
 
 object FEvent {
-   private val _scope = MainScope()
    var isDebug = false
+   private val _scope = MainScope()
 
    private val _flows: MutableMap<Class<*>, WeakRef<MutableSharedFlow<*>>> = mutableMapOf()
    private val _refQueue = ReferenceQueue<Any>()
