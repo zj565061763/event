@@ -33,7 +33,6 @@ class EventTest {
          }
       }
 
-      // job1 and job2 started
       runCurrent()
 
       FEvent.post(TestEvent())
