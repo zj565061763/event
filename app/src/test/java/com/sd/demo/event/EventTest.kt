@@ -35,12 +35,12 @@ class EventTest {
 
       runCurrent()
 
-      FEvent.post(TestEvent())
+      FEvent.emit(TestEvent())
       runCurrent()
       assertEquals(2, count.get())
 
       job1.cancelAndJoin()
-      FEvent.post(TestEvent())
+      FEvent.emit(TestEvent())
       runCurrent()
       assertEquals(3, count.get())
 

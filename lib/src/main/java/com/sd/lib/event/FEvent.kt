@@ -13,7 +13,7 @@ object FEvent {
    private val _scope = CoroutineScope(SupervisorJob() + _dispatcher)
 
    @JvmStatic
-   fun post(event: Any) {
+   fun emit(event: Any) {
       _scope.launch {
          @Suppress("UNCHECKED_CAST")
          val flow = _flows[event.javaClass] as? MutableSharedFlow<Any>

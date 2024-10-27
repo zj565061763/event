@@ -15,7 +15,7 @@ class Sample : AppCompatActivity() {
       super.onCreate(savedInstanceState)
       setContentView(_binding.root)
       _binding.btnPost.setOnClickListener {
-         FEvent.post(SampleEvent())
+         FEvent.emit(SampleEvent())
       }
 
       lifecycleScope.launch {
