@@ -24,7 +24,7 @@ object FEvent {
       synchronized(this@FEvent) {
          @Suppress("UNCHECKED_CAST")
          val flow = _flows[event.javaClass]?.get() as? MutableSharedFlow<Any> ?: return
-         logMsg { "post -----> $event (${flow.subscriptionCount.value})" }
+         logMsg { "post -----> $event" }
          _scope.launch { flow.emit(event) }
       }
    }
