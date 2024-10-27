@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.sd.demo.event.databinding.ActivityMainBinding
-import com.sd.lib.event.FEvent
 
 class MainActivity : AppCompatActivity() {
    private val _binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
@@ -15,12 +14,6 @@ class MainActivity : AppCompatActivity() {
       setContentView(_binding.root)
       _binding.btnSample.setOnClickListener {
          startActivity(Intent(this, Sample::class.java))
-      }
-   }
-
-   companion object {
-      init {
-         FEvent.isDebug = true
       }
    }
 }

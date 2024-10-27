@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.sd.demo.event.databinding.SampleJavaBinding
 import com.sd.lib.event.FEvent
-import com.sd.lib.event.fEvent
 import kotlinx.coroutines.launch
 
 class Sample : AppCompatActivity() {
@@ -19,7 +18,7 @@ class Sample : AppCompatActivity() {
       }
 
       lifecycleScope.launch {
-         fEvent<SampleEvent>().collect { event ->
+         FEvent.collect(SampleEvent::class.java) { event ->
             logMsg { "onEvent $event" }
          }
       }
