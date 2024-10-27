@@ -6,7 +6,7 @@ plugins {
 
 val libGroupId = "com.sd.lib.android"
 val libArtifactId = "event"
-val libVersionName = "1.6.0"
+val libVersionName = "1.6.5"
 
 android {
    namespace = "com.sd.lib.event"
