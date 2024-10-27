@@ -1,7 +1,9 @@
 package com.sd.lib.event
 
 import android.util.Log
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -11,7 +13,11 @@ import java.lang.ref.WeakReference
 
 object FEvent {
    var isDebug = false
-   private val _scope = MainScope()
+
+   private val _scope = CoroutineScope(
+      SupervisorJob() +
+         runCatching { Dispatchers.Main.immediate }.getOrDefault(Dispatchers.Main)
+   )
 
    private val _flows: MutableMap<Class<*>, WeakRef<MutableSharedFlow<*>>> = mutableMapOf()
    private val _refQueue = ReferenceQueue<Any>()
