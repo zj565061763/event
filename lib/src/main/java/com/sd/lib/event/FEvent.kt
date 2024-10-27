@@ -38,3 +38,10 @@ object FEvent {
       }
    }
 }
+
+suspend inline fun <reified T> fEvent(noinline block: suspend (T) -> Unit) {
+   FEvent.collect(
+      clazz = T::class.java,
+      block = block,
+   )
+}
