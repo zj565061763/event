@@ -8,9 +8,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 object FEvent {
+   private val _flows: MutableMap<Class<*>, MutableSharedFlow<*>> = mutableMapOf()
    private val _dispatcher = runCatching { Dispatchers.Main.immediate }.getOrDefault(Dispatchers.Main)
    private val _scope = CoroutineScope(SupervisorJob() + _dispatcher)
-   private val _flows: MutableMap<Class<*>, MutableSharedFlow<*>> = mutableMapOf()
 
    @JvmStatic
    fun post(event: Any) {
