@@ -2,6 +2,7 @@ package com.sd.demo.event
 
 import app.cash.turbine.test
 import com.sd.lib.event.FEvent
+import com.sd.lib.event.fEvent
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -13,16 +14,16 @@ class EventTest {
 
    @Test
    fun `test flow`() = runTest {
-      val flow1 = FEvent.flow(Any::class.java)
-      val flow2 = FEvent.flow(Any::class.java)
-      val flow3 = FEvent.flow(Any::class.java)
+      val flow1 = fEvent<Any>()
+      val flow2 = fEvent<Any>()
+      val flow3 = fEvent<Any>()
       assertEquals(false, flow1 == flow2)
       assertEquals(false, flow2 == flow3)
    }
 
    @Test
    fun `test event`() = runTest {
-      FEvent.flow(TestEvent::class.java).test {
+      fEvent<TestEvent>().test {
          FEvent.post(TestEvent())
          FEvent.post(TestEvent())
          awaitItem()

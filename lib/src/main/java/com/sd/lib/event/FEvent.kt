@@ -70,6 +70,10 @@ object FEvent {
    ) : WeakReference<T>(referent, queue)
 }
 
+inline fun <reified T> fEvent(): Flow<T> {
+   return FEvent.flow(T::class.java)
+}
+
 private inline fun logMsg(block: () -> String) {
    if (FEvent.isDebug) {
       Log.i("FEvent", block())
