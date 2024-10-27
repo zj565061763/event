@@ -23,7 +23,8 @@ object FEvent {
    fun post(event: Any) {
       synchronized(this@FEvent) {
          @Suppress("UNCHECKED_CAST")
-         val flow = _flows[event.javaClass]?.get() as? MutableSharedFlow<Any> ?: return
+         _flows[event.javaClass]?.get() as? MutableSharedFlow<Any>
+      }?.let { flow ->
          logMsg { "post -----> $event" }
          _scope.launch { flow.emit(event) }
       }
@@ -36,9 +37,9 @@ object FEvent {
       return synchronized(this@FEvent) {
          releaseRef()
          @Suppress("UNCHECKED_CAST")
-         (_flows[clazz]?.get() as? MutableSharedFlow<T>) ?: MutableSharedFlow<T>().also { flow ->
+         (_flows[clazz]?.get() as? MutableSharedFlow<T>) ?: MutableSharedFlow<T>().also { newFlow ->
             _flows[clazz] = WeakRef(
-               referent = flow,
+               referent = newFlow,
                queue = _refQueue,
                clazz = clazz,
             )
