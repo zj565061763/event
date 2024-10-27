@@ -14,7 +14,7 @@ class FKeyedEvent<T> {
 
    fun emit(key: String, event: T) {
       _scope.launch {
-         val holder = _flows.getOrPut(key) { FlowHolder() }
+         val holder = _flows.getOrPut(key) { FlowHolder(releaseAble = false) }
          holder.releaseAble = false
          holder.flow.emit(event)
       }
@@ -34,7 +34,7 @@ class FKeyedEvent<T> {
       block: suspend (T) -> Unit,
    ) {
       withContext(_dispatcher) {
-         val holder = _flows.getOrPut(key) { FlowHolder() }
+         val holder = _flows.getOrPut(key) { FlowHolder(releaseAble = true) }
          try {
             holder.flow.collect {
                block(it)
@@ -51,8 +51,9 @@ class FKeyedEvent<T> {
       }
    }
 
-   private class FlowHolder<T> {
+   private class FlowHolder<T>(
+      var releaseAble: Boolean,
+   ) {
       val flow: MutableSharedFlow<T> = MutableSharedFlow()
-      var releaseAble: Boolean = false
    }
 }
