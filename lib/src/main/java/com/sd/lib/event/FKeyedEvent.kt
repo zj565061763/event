@@ -45,15 +45,16 @@ class FKeyedEvent<T> {
       }
    }
 
-   private fun FlowHolder<T>.release(key: String) {
-      if (releaseAble && flow.subscriptionCount.value == 0) {
-         _flows.remove(key)
-      }
-   }
 
-   private class FlowHolder<T>(
+   private inner class FlowHolder<T>(
       var releaseAble: Boolean,
    ) {
       val flow: MutableSharedFlow<T> = MutableSharedFlow()
+
+      fun release(key: String) {
+         if (releaseAble && flow.subscriptionCount.value == 0) {
+            _flows.remove(key)
+         }
+      }
    }
 }
