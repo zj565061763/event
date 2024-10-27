@@ -22,8 +22,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SampleJava" />
-        <activity android:name=".SampleKotlin" />
+        <activity android:name=".Sample" />
 
     </application>
 

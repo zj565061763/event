@@ -13,11 +13,8 @@ class MainActivity : AppCompatActivity() {
    override fun onCreate(savedInstanceState: Bundle?) {
       super.onCreate(savedInstanceState)
       setContentView(_binding.root)
-      _binding.btnSampleJava.setOnClickListener {
-         startActivity(Intent(this, SampleJava::class.java))
-      }
-      _binding.btnSampleKotlin.setOnClickListener {
-         startActivity(Intent(this, SampleKotlin::class.java))
+      _binding.btnSample.setOnClickListener {
+         startActivity(Intent(this, Sample::class.java))
       }
    }
 

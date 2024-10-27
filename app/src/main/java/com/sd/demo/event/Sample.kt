@@ -7,7 +7,7 @@ import com.sd.demo.event.databinding.SampleJavaBinding
 import com.sd.lib.event.FEvent
 import kotlinx.coroutines.launch
 
-class SampleKotlin : AppCompatActivity() {
+class Sample : AppCompatActivity() {
    private val _binding by lazy { SampleJavaBinding.inflate(layoutInflater) }
 
    override fun onCreate(savedInstanceState: Bundle?) {
