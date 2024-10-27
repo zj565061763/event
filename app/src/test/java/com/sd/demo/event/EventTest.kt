@@ -5,7 +5,7 @@ import com.sd.lib.event.fEvent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -21,28 +21,31 @@ class EventTest {
    fun `test event`() = runTest {
       val count = AtomicInteger()
 
-      val job = launch {
+      val job1 = launch {
          fEvent<TestEvent> {
             count.incrementAndGet()
          }
       }
 
-      launch {
+      val job2 = launch {
          fEvent<TestEvent> {
             count.incrementAndGet()
          }
       }
 
-      advanceUntilIdle()
+      // job1 and job2 started
+      runCurrent()
 
       FEvent.post(TestEvent())
-      advanceUntilIdle()
+      runCurrent()
       assertEquals(2, count.get())
 
-      job.cancelAndJoin()
+      job1.cancelAndJoin()
       FEvent.post(TestEvent())
-      advanceUntilIdle()
+      runCurrent()
       assertEquals(3, count.get())
+
+      job2.cancel()
    }
 }
 

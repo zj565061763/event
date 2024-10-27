@@ -33,7 +33,9 @@ object FEvent {
                block(it)
             }
          } finally {
-            _flows.remove(clazz)
+            if (flow.subscriptionCount.value == 0) {
+               _flows.remove(clazz)
+            }
          }
       }
    }
