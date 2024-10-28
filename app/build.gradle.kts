@@ -47,7 +47,6 @@ dependencies {
    testImplementation(libs.junit)
    androidTestImplementation(libs.androidx.test.ext.junit)
    androidTestImplementation(libs.androidx.test.espresso.core)
-   testImplementation(libs.cash.turbine)
    testImplementation(libs.kotlinx.coroutines.test)
 
    implementation(project(":lib"))
