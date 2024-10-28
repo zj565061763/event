@@ -41,11 +41,9 @@ class KeyedStateTest {
 
       job1.cancelAndJoin()
       state.emit("", TestKeyedState())
-      state.release("")
       runCurrent()
+      job2.cancelAndJoin()
       assertEquals(3, count.get())
-
-      job2.cancel()
    }
 }
 
