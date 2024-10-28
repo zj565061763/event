@@ -1,6 +1,6 @@
 package com.sd.demo.event
 
-import com.sd.lib.event.FKeyedEvent
+import com.sd.lib.event.FKeyedState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
@@ -12,36 +12,36 @@ import org.junit.Test
 import java.util.concurrent.atomic.AtomicInteger
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class KeyedEventTest {
+class KeyedStateTest {
    @get:Rule
    val mainDispatcherRule = MainDispatcherRule()
 
    @Test
-   fun `test event`() = runTest {
-      val keyedEvent = FKeyedEvent<TestKeyedEvent>()
+   fun `test state`() = runTest {
+      val state = FKeyedState<TestKeyedState>()
       val count = AtomicInteger()
 
       val job1 = launch {
-         keyedEvent.collect("") {
+         state.collect("") {
             count.incrementAndGet()
          }
       }
 
       val job2 = launch {
-         keyedEvent.collect("") {
+         state.collect("") {
             count.incrementAndGet()
          }
       }
 
       runCurrent()
 
-      keyedEvent.emit("", TestKeyedEvent())
+      state.emit("", TestKeyedState())
       runCurrent()
       assertEquals(2, count.get())
 
       job1.cancelAndJoin()
-      keyedEvent.emit("", TestKeyedEvent())
-      keyedEvent.release("")
+      state.emit("", TestKeyedState())
+      state.release("")
       runCurrent()
       assertEquals(3, count.get())
 
@@ -49,4 +49,4 @@ class KeyedEventTest {
    }
 }
 
-private class TestKeyedEvent
+private class TestKeyedState

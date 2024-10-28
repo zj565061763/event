@@ -7,16 +7,16 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class FKeyedEvent<T> {
+class FKeyedState<T> {
    private val _flows: MutableMap<String, FlowHolder<T>> = mutableMapOf()
    private val _dispatcher = runCatching { Dispatchers.Main.immediate }.getOrDefault(Dispatchers.Main)
    private val _scope = CoroutineScope(SupervisorJob() + _dispatcher)
 
-   fun emit(key: String, event: T) {
+   fun emit(key: String, state: T) {
       _scope.launch {
          val holder = _flows.getOrPut(key) { FlowHolder(releaseAble = false) }
          holder.releaseAble = false
-         holder.flow.emit(event)
+         holder.flow.emit(state)
       }
    }
 
@@ -48,7 +48,7 @@ class FKeyedEvent<T> {
    private inner class FlowHolder<T>(
       var releaseAble: Boolean,
    ) {
-      val flow: MutableSharedFlow<T> = MutableSharedFlow()
+      val flow: MutableSharedFlow<T> = MutableSharedFlow(replay = 1)
 
       fun release(key: String) {
          if (releaseAble && flow.subscriptionCount.value == 0) {
