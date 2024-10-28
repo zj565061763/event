@@ -64,6 +64,55 @@ class KeyedStateTest {
       assertEquals(1, count.get())
       job.cancelAndJoin()
    }
+
+   @Test
+   fun `test release`() = runTest {
+      val state = FKeyedState<TestKeyedState>()
+      val count = AtomicInteger()
+
+      run {
+         state.emit("", TestKeyedState())
+         state.release("")
+         runCurrent()
+
+         launch {
+            state.collect("") {
+               count.incrementAndGet()
+            }
+         }.let { job ->
+            runCurrent()
+            assertEquals(0, count.get())
+            job.cancelAndJoin()
+         }
+      }
+
+      run {
+         state.emit("", TestKeyedState())
+         runCurrent()
+
+         launch {
+            state.collect("") {
+               count.incrementAndGet()
+            }
+         }.let { job ->
+            runCurrent()
+            state.release("")
+            runCurrent()
+            assertEquals(1, count.get())
+            job.cancelAndJoin()
+         }
+
+         launch {
+            state.collect("") {
+               count.incrementAndGet()
+            }
+         }.let { job ->
+            runCurrent()
+            assertEquals(1, count.get())
+            job.cancelAndJoin()
+         }
+      }
+   }
 }
 
 private class TestKeyedState
