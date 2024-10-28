@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -36,9 +37,9 @@ class FKeyedState<T> {
       withContext(_dispatcher) {
          val holder = _flows.getOrPut(key) { FlowHolder(releaseAble = true) }
          try {
-            holder.flow.collect {
-               block(it)
-            }
+            holder.flow
+               .distinctUntilChanged()
+               .collect { block(it) }
          } finally {
             holder.release(key)
          }
