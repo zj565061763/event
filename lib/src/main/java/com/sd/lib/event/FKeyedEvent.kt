@@ -45,7 +45,6 @@ class FKeyedEvent<T> {
       }
    }
 
-
    private inner class FlowHolder<T>(
       var releaseAble: Boolean,
    ) {

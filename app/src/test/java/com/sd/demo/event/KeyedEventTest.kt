@@ -41,6 +41,7 @@ class KeyedEventTest {
 
       job1.cancelAndJoin()
       keyedEvent.emit("", TestKeyedEvent())
+      keyedEvent.release("")
       runCurrent()
       assertEquals(3, count.get())
 
