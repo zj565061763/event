@@ -45,6 +45,25 @@ class KeyedStateTest {
       job2.cancelAndJoin()
       assertEquals(3, count.get())
    }
+
+   @Test
+   fun `test state replay`() = runTest {
+      val state = FKeyedState<TestKeyedState>()
+      val count = AtomicInteger()
+
+      state.emit("", TestKeyedState())
+      runCurrent()
+
+      val job = launch {
+         state.collect("") {
+            count.incrementAndGet()
+         }
+      }
+
+      runCurrent()
+      assertEquals(1, count.get())
+      job.cancelAndJoin()
+   }
 }
 
 private class TestKeyedState
