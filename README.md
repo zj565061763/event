@@ -12,7 +12,7 @@ FEvent.post(SampleEvent())
 ```kotlin
 lifecycleScope.launch {
    FEvent.flowOf<SampleEvent>().collect { event ->
-      // Handle event
+      // Collect event
    }
 }
 ```
