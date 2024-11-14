@@ -45,9 +45,10 @@ dependencies {
    implementation(libs.androidx.lifecycle.viewmodel)
 
    testImplementation(libs.junit)
+   testImplementation(libs.cash.turbine)
+   testImplementation(libs.kotlinx.coroutines.test)
    androidTestImplementation(libs.androidx.test.ext.junit)
    androidTestImplementation(libs.androidx.test.espresso.core)
-   testImplementation(libs.kotlinx.coroutines.test)
 
    implementation(project(":lib"))
 }

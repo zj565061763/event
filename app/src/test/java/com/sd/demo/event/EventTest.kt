@@ -1,5 +1,6 @@
 package com.sd.demo.event
 
+import app.cash.turbine.test
 import com.sd.lib.event.FEvent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancelAndJoin
@@ -44,6 +45,18 @@ class EventTest {
       assertEquals(3, count.get())
 
       job2.cancel()
+   }
+
+   @Test
+   fun `test flow`() = runTest {
+      FEvent.flowOf<String>().test {
+         FEvent.emit("1")
+         FEvent.emit("1")
+         FEvent.emit("1")
+         assertEquals("1", awaitItem())
+         assertEquals("1", awaitItem())
+         assertEquals("1", awaitItem())
+      }
    }
 }
 
