@@ -3,7 +3,9 @@ package com.sd.lib.event
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -13,7 +15,7 @@ object FEvent {
    private val _scope = CoroutineScope(SupervisorJob() + _dispatcher)
 
    @JvmStatic
-   fun emit(event: Any) {
+   fun post(event: Any) {
       _scope.launch {
          @Suppress("UNCHECKED_CAST")
          val flow = _flows[event.javaClass] as? MutableSharedFlow<Any>
@@ -21,7 +23,19 @@ object FEvent {
       }
    }
 
-   suspend fun <T> collect(
+   inline fun <reified T> flowOf(): Flow<T> {
+      return flowOf(T::class.java)
+   }
+
+   fun <T> flowOf(clazz: Class<T>): Flow<T> {
+      return channelFlow {
+         collect(clazz) {
+            send(it)
+         }
+      }
+   }
+
+   private suspend fun <T> collect(
       clazz: Class<T>,
       block: suspend (T) -> Unit,
    ) {
@@ -39,11 +53,4 @@ object FEvent {
          }
       }
    }
-}
-
-suspend inline fun <reified T> fEvent(noinline block: suspend (T) -> Unit) {
-   FEvent.collect(
-      clazz = T::class.java,
-      block = block,
-   )
 }

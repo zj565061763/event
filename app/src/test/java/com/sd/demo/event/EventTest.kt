@@ -1,7 +1,6 @@
 package com.sd.demo.event
 
 import com.sd.lib.event.FEvent
-import com.sd.lib.event.fEvent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
@@ -22,25 +21,25 @@ class EventTest {
       val count = AtomicInteger()
 
       val job1 = launch {
-         fEvent<TestEvent> {
+         FEvent.flowOf<TestEvent>().collect {
             count.incrementAndGet()
          }
       }
 
       val job2 = launch {
-         fEvent<TestEvent> {
+         FEvent.flowOf<TestEvent>().collect {
             count.incrementAndGet()
          }
       }
 
       runCurrent()
 
-      FEvent.emit(TestEvent())
+      FEvent.post(TestEvent())
       runCurrent()
       assertEquals(2, count.get())
 
       job1.cancelAndJoin()
-      FEvent.emit(TestEvent())
+      FEvent.post(TestEvent())
       runCurrent()
       assertEquals(3, count.get())
 
