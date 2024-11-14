@@ -17,6 +17,12 @@ object FEvent {
    @JvmStatic
    fun post(event: Any) {
       _scope.launch {
+         emit(event)
+      }
+   }
+
+   suspend fun emit(event: Any) {
+      withContext(_dispatcher) {
          @Suppress("UNCHECKED_CAST")
          val flow = _flows[event.javaClass] as? MutableSharedFlow<Any>
          flow?.emit(event)
