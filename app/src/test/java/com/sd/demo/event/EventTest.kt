@@ -34,7 +34,7 @@ class EventTest {
 
       runCurrent()
 
-      FEvent.post(TestEvent())
+      FEvent.emit(TestEvent())
       runCurrent()
       assertEquals(2, count.get())
 
