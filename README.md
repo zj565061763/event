@@ -11,7 +11,7 @@ FEvent.post(SampleEvent())
 
 ```kotlin
 lifecycleScope.launch {
-   fEvent<SampleEvent> { event ->
+   FEvent.flowOf<SampleEvent>().collect { event ->
       // Handle event
    }
 }
