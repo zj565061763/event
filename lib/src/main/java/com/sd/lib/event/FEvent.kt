@@ -35,13 +35,13 @@ object FEvent {
 
   fun <T> flowOf(clazz: Class<T>): Flow<T> {
     return channelFlow {
-      collect(clazz) {
+      collectEvent(clazz) {
         send(it)
       }
     }
   }
 
-  private suspend fun <T> collect(
+  private suspend fun <T> collectEvent(
     clazz: Class<T>,
     block: suspend (T) -> Unit,
   ) {
