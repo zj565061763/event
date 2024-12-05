@@ -2,17 +2,17 @@
 
 androidCompileSdk = "34"
 
-androidGradlePlugin = "8.7.1"
+androidGradlePlugin = "8.7.3"
 kotlin = "1.9.25"
 
 [libraries]
 
 androidx-appcompat = "androidx.appcompat:appcompat:1.7.0"
-androidx-lifecycle-viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6"
+androidx-lifecycle-viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7"
 
 kotlin-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1"
 kotlinx-coroutines-test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1"
-cash-turbine = "app.cash.turbine:turbine:1.1.0"
+cash-turbine = "app.cash.turbine:turbine:1.2.0"
 
 junit = "junit:junit:4.13.2"
 androidx-test-ext-junit = "androidx.test.ext:junit:1.2.1"

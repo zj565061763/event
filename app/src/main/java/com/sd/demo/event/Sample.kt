@@ -8,23 +8,23 @@ import com.sd.lib.event.FEvent
 import kotlinx.coroutines.launch
 
 class Sample : AppCompatActivity() {
-   private val _binding by lazy { SampleJavaBinding.inflate(layoutInflater) }
+  private val _binding by lazy { SampleJavaBinding.inflate(layoutInflater) }
 
-   override fun onCreate(savedInstanceState: Bundle?) {
-      super.onCreate(savedInstanceState)
-      setContentView(_binding.root)
-      _binding.btnPost.setOnClickListener {
-         FEvent.post(SampleEvent())
-      }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(_binding.root)
+    _binding.btnPost.setOnClickListener {
+      FEvent.post(SampleEvent())
+    }
 
-      lifecycleScope.launch {
-         FEvent.flowOf<SampleEvent>().collect { event ->
-            logMsg { "onEvent $event" }
-         }
+    lifecycleScope.launch {
+      FEvent.flowOf<SampleEvent>().collect { event ->
+        logMsg { "onEvent $event" }
       }
-   }
+    }
+  }
 }
 
 private data class SampleEvent(
-   val name: String = "Tome",
+  val name: String = "Tome",
 )

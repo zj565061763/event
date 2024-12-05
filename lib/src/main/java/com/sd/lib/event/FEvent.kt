@@ -10,53 +10,53 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 object FEvent {
-   private val _flows: MutableMap<Class<*>, MutableSharedFlow<*>> = mutableMapOf()
-   private val _dispatcher = runCatching { Dispatchers.Main.immediate }.getOrDefault(Dispatchers.Main)
-   private val _scope = CoroutineScope(SupervisorJob() + _dispatcher)
+  private val _flows = mutableMapOf<Class<*>, MutableSharedFlow<*>>()
+  private val _dispatcher = runCatching { Dispatchers.Main.immediate }.getOrElse { Dispatchers.Main }
+  private val _scope = CoroutineScope(SupervisorJob() + _dispatcher)
 
-   @JvmStatic
-   fun post(event: Any) {
-      _scope.launch {
-         emit(event)
+  @JvmStatic
+  fun post(event: Any) {
+    _scope.launch {
+      emit(event)
+    }
+  }
+
+  suspend fun emit(event: Any) {
+    withContext(_dispatcher) {
+      @Suppress("UNCHECKED_CAST")
+      val flow = _flows[event.javaClass] as? MutableSharedFlow<Any>
+      flow?.emit(event)
+    }
+  }
+
+  inline fun <reified T> flowOf(): Flow<T> {
+    return flowOf(T::class.java)
+  }
+
+  fun <T> flowOf(clazz: Class<T>): Flow<T> {
+    return channelFlow {
+      collect(clazz) {
+        send(it)
       }
-   }
+    }
+  }
 
-   suspend fun emit(event: Any) {
-      withContext(_dispatcher) {
-         @Suppress("UNCHECKED_CAST")
-         val flow = _flows[event.javaClass] as? MutableSharedFlow<Any>
-         flow?.emit(event)
+  private suspend fun <T> collect(
+    clazz: Class<T>,
+    block: suspend (T) -> Unit,
+  ) {
+    withContext(_dispatcher) {
+      @Suppress("UNCHECKED_CAST")
+      val flow = _flows.getOrPut(clazz) { MutableSharedFlow<Any>() } as MutableSharedFlow<T>
+      try {
+        flow.collect {
+          block(it)
+        }
+      } finally {
+        if (flow.subscriptionCount.value == 0) {
+          _flows.remove(clazz)
+        }
       }
-   }
-
-   inline fun <reified T> flowOf(): Flow<T> {
-      return flowOf(T::class.java)
-   }
-
-   fun <T> flowOf(clazz: Class<T>): Flow<T> {
-      return channelFlow {
-         collect(clazz) {
-            send(it)
-         }
-      }
-   }
-
-   private suspend fun <T> collect(
-      clazz: Class<T>,
-      block: suspend (T) -> Unit,
-   ) {
-      withContext(_dispatcher) {
-         @Suppress("UNCHECKED_CAST")
-         val flow = _flows.getOrPut(clazz) { MutableSharedFlow<Any>() } as MutableSharedFlow<T>
-         try {
-            flow.collect {
-               block(it)
-            }
-         } finally {
-            if (flow.subscriptionCount.value == 0) {
-               _flows.remove(clazz)
-            }
-         }
-      }
-   }
+    }
+  }
 }

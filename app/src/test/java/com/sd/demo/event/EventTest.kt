@@ -14,50 +14,50 @@ import java.util.concurrent.atomic.AtomicInteger
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class EventTest {
-   @get:Rule
-   val mainDispatcherRule = MainDispatcherRule()
+  @get:Rule
+  val mainDispatcherRule = MainDispatcherRule()
 
-   @Test
-   fun `test event`() = runTest {
-      val count = AtomicInteger()
+  @Test
+  fun `test event`() = runTest {
+    val count = AtomicInteger()
 
-      val job1 = launch {
-         FEvent.flowOf<TestEvent>().collect {
-            count.incrementAndGet()
-         }
+    val job1 = launch {
+      FEvent.flowOf<TestEvent>().collect {
+        count.incrementAndGet()
       }
+    }
 
-      val job2 = launch {
-         FEvent.flowOf<TestEvent>().collect {
-            count.incrementAndGet()
-         }
+    val job2 = launch {
+      FEvent.flowOf<TestEvent>().collect {
+        count.incrementAndGet()
       }
+    }
 
-      runCurrent()
+    runCurrent()
 
-      FEvent.emit(TestEvent())
-      runCurrent()
-      assertEquals(2, count.get())
+    FEvent.emit(TestEvent())
+    runCurrent()
+    assertEquals(2, count.get())
 
-      job1.cancelAndJoin()
-      FEvent.post(TestEvent())
-      runCurrent()
-      assertEquals(3, count.get())
+    job1.cancelAndJoin()
+    FEvent.post(TestEvent())
+    runCurrent()
+    assertEquals(3, count.get())
 
-      job2.cancel()
-   }
+    job2.cancel()
+  }
 
-   @Test
-   fun `test flow`() = runTest {
-      FEvent.flowOf<String>().test {
-         FEvent.emit("1")
-         FEvent.emit("1")
-         FEvent.emit("1")
-         assertEquals("1", awaitItem())
-         assertEquals("1", awaitItem())
-         assertEquals("1", awaitItem())
-      }
-   }
+  @Test
+  fun `test flow`() = runTest {
+    FEvent.flowOf<String>().test {
+      FEvent.emit("1")
+      FEvent.emit("1")
+      FEvent.emit("1")
+      assertEquals("1", awaitItem())
+      assertEquals("1", awaitItem())
+      assertEquals("1", awaitItem())
+    }
+  }
 }
 
 private class TestEvent
