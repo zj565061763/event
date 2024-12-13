@@ -18,17 +18,34 @@ class Sample : AppCompatActivity() {
     setContentView(_binding.root)
     _binding.btnPost.setOnClickListener {
       FEvent.post(SampleEvent())
+      FEvent.post(ParentEvent.ChildEvent(), ParentEvent::class.java)
     }
+    collectSampleEvent()
+    collectSealedEvent()
+  }
 
+  private fun collectSampleEvent() {
     lifecycleScope.launch {
       FEvent.collect<SampleEvent> { event ->
         logMsg { "event $event" }
       }
     }
-
     lifecycleScope.launch {
       FEvent.flowOf<SampleEvent>().collect { event ->
         logMsg { "flowOf event $event" }
+      }
+    }
+  }
+
+  private fun collectSealedEvent() {
+    lifecycleScope.launch {
+      FEvent.collect<ParentEvent> { event ->
+        logMsg { "ParentEvent $event" }
+      }
+    }
+    lifecycleScope.launch {
+      FEvent.collect<ParentEvent.ChildEvent> { event ->
+        logMsg { "ChildEvent $event" }
       }
     }
   }
@@ -37,3 +54,7 @@ class Sample : AppCompatActivity() {
 private data class SampleEvent(
   val name: String = "Tome",
 )
+
+sealed interface ParentEvent {
+  data class ChildEvent(val name: String = "child") : ParentEvent
+}
