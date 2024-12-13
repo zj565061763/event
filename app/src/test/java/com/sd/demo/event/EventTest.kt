@@ -2,6 +2,7 @@ package com.sd.demo.event
 
 import app.cash.turbine.test
 import com.sd.lib.event.FEvent
+import com.sd.lib.event.flowOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch

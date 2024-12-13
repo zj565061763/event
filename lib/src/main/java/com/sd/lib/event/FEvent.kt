@@ -29,22 +29,7 @@ object FEvent {
     }
   }
 
-  inline fun <reified T> flowOf(): Flow<T> {
-    return flowOf(T::class.java)
-  }
-
-  fun <T> flowOf(clazz: Class<T>): Flow<T> {
-    return channelFlow {
-      collectEvent(clazz) {
-        send(it)
-      }
-    }
-  }
-
-  private suspend fun <T> collectEvent(
-    clazz: Class<T>,
-    block: suspend (T) -> Unit,
-  ) {
+  suspend fun <T> collect(clazz: Class<T>, block: suspend (T) -> Unit) {
     withContext(_dispatcher) {
       @Suppress("UNCHECKED_CAST")
       val flow = _flows.getOrPut(clazz) { MutableSharedFlow<Any>() } as MutableSharedFlow<T>
@@ -57,6 +42,16 @@ object FEvent {
           _flows.remove(clazz)
         }
       }
+    }
+  }
+}
+
+inline fun <reified T> FEvent.flowOf(): Flow<T> = flowOf(T::class.java)
+
+fun <T> FEvent.flowOf(clazz: Class<T>): Flow<T> {
+  return channelFlow {
+    collect(clazz) {
+      send(it)
     }
   }
 }
