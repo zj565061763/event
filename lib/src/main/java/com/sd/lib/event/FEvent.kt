@@ -23,7 +23,7 @@ object FEvent {
     }
   }
 
-  suspend fun <T> collect(
+  internal suspend fun <T> collect(
     key: Class<T>,
     block: suspend (T) -> Unit,
   ) {
@@ -52,7 +52,8 @@ fun <T : Any> FEvent.post(
   }
 }
 
-suspend inline fun <reified T> FEvent.collect(noinline block: suspend (T) -> Unit) = collect(T::class.java, block)
-
 inline fun <reified T> FEvent.flowOf(): Flow<T> = flowOf(T::class.java)
-fun <T> FEvent.flowOf(key: Class<T>): Flow<T> = channelFlow { collect(key) { send(it) } }
+
+fun <T> FEvent.flowOf(key: Class<T>): Flow<T> = channelFlow {
+  collect(key) { send(it) }
+}

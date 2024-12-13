@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.sd.demo.event.databinding.SampleJavaBinding
 import com.sd.lib.event.FEvent
-import com.sd.lib.event.collect
 import com.sd.lib.event.flowOf
 import com.sd.lib.event.post
 import kotlinx.coroutines.launch
@@ -26,26 +25,21 @@ class Sample : AppCompatActivity() {
 
   private fun collectSampleEvent() {
     lifecycleScope.launch {
-      FEvent.collect<SampleEvent> { event ->
-        logMsg { "event $event" }
-      }
-    }
-    lifecycleScope.launch {
       FEvent.flowOf<SampleEvent>().collect { event ->
-        logMsg { "flowOf event $event" }
+        logMsg { "flowOf SampleEvent -> $event" }
       }
     }
   }
 
   private fun collectSealedEvent() {
     lifecycleScope.launch {
-      FEvent.collect<ParentEvent> { event ->
-        logMsg { "ParentEvent $event" }
+      FEvent.flowOf<ParentEvent>().collect { event ->
+        logMsg { "flowOf ParentEvent -> $event" }
       }
     }
     lifecycleScope.launch {
-      FEvent.collect<ParentEvent.ChildEvent> { event ->
-        logMsg { "ChildEvent $event" }
+      FEvent.flowOf<ParentEvent.ChildEvent>().collect { event ->
+        logMsg { "flowOf ChildEvent -> $event" }
       }
     }
   }
