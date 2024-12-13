@@ -18,7 +18,7 @@ object FEvent {
   ) {
     withContext(Dispatchers.Main) {
       @Suppress("UNCHECKED_CAST")
-      val flow = _flows[key] as? MutableSharedFlow<Any>
+      val flow = _flows[key] as? MutableSharedFlow<T>
       flow?.emit(event)
     }
   }
@@ -29,7 +29,7 @@ object FEvent {
   ) {
     withContext(Dispatchers.Main) {
       @Suppress("UNCHECKED_CAST")
-      val flow = _flows.getOrPut(key) { MutableSharedFlow<Any>() } as MutableSharedFlow<T>
+      val flow = _flows.getOrPut(key) { MutableSharedFlow<T>() } as MutableSharedFlow<T>
       try {
         flow.collect {
           block(it)
