@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.sd.demo.event.databinding.SampleJavaBinding
 import com.sd.lib.event.FEvent
+import com.sd.lib.event.flowOf
 import kotlinx.coroutines.launch
 
 class Sample : AppCompatActivity() {
