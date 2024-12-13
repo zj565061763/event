@@ -20,15 +20,21 @@ object FEvent {
     }
   }
 
-  suspend fun emit(event: Any) {
+  suspend fun <T : Any> emit(
+    event: T,
+    clazz: Class<T> = event.javaClass,
+  ) {
     withContext(Dispatchers.Main) {
       @Suppress("UNCHECKED_CAST")
-      val flow = _flows[event.javaClass] as? MutableSharedFlow<Any>
+      val flow = _flows[clazz] as? MutableSharedFlow<Any>
       flow?.emit(event)
     }
   }
 
-  suspend fun <T> collect(clazz: Class<T>, block: suspend (T) -> Unit) {
+  suspend fun <T> collect(
+    clazz: Class<T>,
+    block: suspend (T) -> Unit,
+  ) {
     withContext(Dispatchers.Main) {
       @Suppress("UNCHECKED_CAST")
       val flow = _flows.getOrPut(clazz) { MutableSharedFlow<Any>() } as MutableSharedFlow<T>
