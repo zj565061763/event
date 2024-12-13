@@ -12,14 +12,6 @@ import kotlinx.coroutines.withContext
 object FEvent {
   private val _flows = mutableMapOf<Class<*>, MutableSharedFlow<*>>()
 
-  @JvmStatic
-  fun post(event: Any) {
-    @OptIn(DelicateCoroutinesApi::class)
-    GlobalScope.launch(Dispatchers.Main) {
-      emit(event)
-    }
-  }
-
   suspend fun <T : Any> emit(
     event: T,
     key: Class<T> = event.javaClass,
@@ -51,14 +43,18 @@ object FEvent {
   }
 }
 
+@JvmOverloads
+fun <T : Any> FEvent.post(
+  event: T,
+  key: Class<T> = event.javaClass,
+) {
+  @OptIn(DelicateCoroutinesApi::class)
+  GlobalScope.launch(Dispatchers.Main) {
+    emit(event, key)
+  }
+}
+
 suspend inline fun <reified T> FEvent.collect(noinline block: suspend (T) -> Unit) = collect(T::class.java, block)
 
 inline fun <reified T> FEvent.flowOf(): Flow<T> = flowOf(T::class.java)
-
-fun <T> FEvent.flowOf(key: Class<T>): Flow<T> {
-  return channelFlow {
-    collect(key) {
-      send(it)
-    }
-  }
-}
+fun <T> FEvent.flowOf(key: Class<T>): Flow<T> = channelFlow { collect(key) { send(it) } }

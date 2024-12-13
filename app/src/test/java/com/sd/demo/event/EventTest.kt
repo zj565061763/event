@@ -3,6 +3,7 @@ package com.sd.demo.event
 import app.cash.turbine.test
 import com.sd.lib.event.FEvent
 import com.sd.lib.event.flowOf
+import com.sd.lib.event.post
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
@@ -36,7 +37,7 @@ class EventTest {
 
     runCurrent()
 
-    FEvent.emit(TestEvent())
+    FEvent.post(TestEvent())
     runCurrent()
     assertEquals(2, count.get())
 
@@ -51,9 +52,9 @@ class EventTest {
   @Test
   fun `test flow`() = runTest {
     FEvent.flowOf<String>().test {
-      FEvent.emit("1")
-      FEvent.emit("1")
-      FEvent.emit("1")
+      FEvent.post("1")
+      FEvent.post("1")
+      FEvent.post("1")
       assertEquals("1", awaitItem())
       assertEquals("1", awaitItem())
       assertEquals("1", awaitItem())

@@ -7,6 +7,7 @@ import com.sd.demo.event.databinding.SampleJavaBinding
 import com.sd.lib.event.FEvent
 import com.sd.lib.event.collect
 import com.sd.lib.event.flowOf
+import com.sd.lib.event.post
 import kotlinx.coroutines.launch
 
 class Sample : AppCompatActivity() {
