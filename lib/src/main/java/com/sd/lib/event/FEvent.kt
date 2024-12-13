@@ -1,7 +1,8 @@
 package com.sd.lib.event
 
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.channelFlow
@@ -10,11 +11,11 @@ import kotlinx.coroutines.withContext
 
 object FEvent {
   private val _flows = mutableMapOf<Class<*>, MutableSharedFlow<*>>()
-  private val _scope = MainScope()
 
   @JvmStatic
   fun post(event: Any) {
-    _scope.launch {
+    @OptIn(DelicateCoroutinesApi::class)
+    GlobalScope.launch(Dispatchers.Main) {
       emit(event)
     }
   }
