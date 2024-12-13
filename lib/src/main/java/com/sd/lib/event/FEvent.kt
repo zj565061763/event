@@ -31,9 +31,7 @@ object FEvent {
       @Suppress("UNCHECKED_CAST")
       val flow = _map.getOrPut(key) { MutableSharedFlow<T>() } as MutableSharedFlow<T>
       try {
-        flow.collect {
-          block(it)
-        }
+        flow.collect { block(it) }
       } finally {
         if (flow.subscriptionCount.value == 0) {
           _map.remove(key)
