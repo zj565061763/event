@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 object FEvent {
-  private val _flows = mutableMapOf<Class<*>, MutableSharedFlow<*>>()
+  private val _map = mutableMapOf<Class<*>, MutableSharedFlow<*>>()
 
   suspend fun <T : Any> emit(
     event: T,
@@ -18,7 +18,7 @@ object FEvent {
   ) {
     withContext(Dispatchers.Main) {
       @Suppress("UNCHECKED_CAST")
-      val flow = _flows[key] as? MutableSharedFlow<T>
+      val flow = _map[key] as? MutableSharedFlow<T>
       flow?.emit(event)
     }
   }
@@ -29,14 +29,14 @@ object FEvent {
   ) {
     withContext(Dispatchers.Main) {
       @Suppress("UNCHECKED_CAST")
-      val flow = _flows.getOrPut(key) { MutableSharedFlow<T>() } as MutableSharedFlow<T>
+      val flow = _map.getOrPut(key) { MutableSharedFlow<T>() } as MutableSharedFlow<T>
       try {
         flow.collect {
           block(it)
         }
       } finally {
         if (flow.subscriptionCount.value == 0) {
-          _flows.remove(key)
+          _map.remove(key)
         }
       }
     }
