@@ -11,8 +11,14 @@ FEvent.post(SampleEvent())
 
 ```kotlin
 lifecycleScope.launch {
-   FEvent.flowOf<SampleEvent>().collect { event ->
-      // Collect event
-   }
+  FEvent.collect<SampleEvent> { event ->
+    logMsg { "event $event" }
+  }
+}
+
+lifecycleScope.launch {
+  FEvent.flowOf<SampleEvent>().collect { event ->
+    // Collect event
+  }
 }
 ```

@@ -51,6 +51,8 @@ object FEvent {
   }
 }
 
+suspend inline fun <reified T> FEvent.collect(noinline block: suspend (T) -> Unit) = collect(T::class.java, block)
+
 inline fun <reified T> FEvent.flowOf(): Flow<T> = flowOf(T::class.java)
 
 fun <T> FEvent.flowOf(clazz: Class<T>): Flow<T> {
