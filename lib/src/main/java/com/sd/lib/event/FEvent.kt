@@ -22,29 +22,29 @@ object FEvent {
 
   suspend fun <T : Any> emit(
     event: T,
-    clazz: Class<T> = event.javaClass,
+    key: Class<T> = event.javaClass,
   ) {
     withContext(Dispatchers.Main) {
       @Suppress("UNCHECKED_CAST")
-      val flow = _flows[clazz] as? MutableSharedFlow<Any>
+      val flow = _flows[key] as? MutableSharedFlow<Any>
       flow?.emit(event)
     }
   }
 
   suspend fun <T> collect(
-    clazz: Class<T>,
+    key: Class<T>,
     block: suspend (T) -> Unit,
   ) {
     withContext(Dispatchers.Main) {
       @Suppress("UNCHECKED_CAST")
-      val flow = _flows.getOrPut(clazz) { MutableSharedFlow<Any>() } as MutableSharedFlow<T>
+      val flow = _flows.getOrPut(key) { MutableSharedFlow<Any>() } as MutableSharedFlow<T>
       try {
         flow.collect {
           block(it)
         }
       } finally {
         if (flow.subscriptionCount.value == 0) {
-          _flows.remove(clazz)
+          _flows.remove(key)
         }
       }
     }
@@ -55,9 +55,9 @@ suspend inline fun <reified T> FEvent.collect(noinline block: suspend (T) -> Uni
 
 inline fun <reified T> FEvent.flowOf(): Flow<T> = flowOf(T::class.java)
 
-fun <T> FEvent.flowOf(clazz: Class<T>): Flow<T> {
+fun <T> FEvent.flowOf(key: Class<T>): Flow<T> {
   return channelFlow {
-    collect(clazz) {
+    collect(key) {
       send(it)
     }
   }
