@@ -23,7 +23,9 @@ object FEvent {
     }
   }
 
-  internal suspend fun <T> collect(
+  suspend inline fun <reified T> collect(noinline block: suspend (T) -> Unit) = collect(T::class.java, block)
+
+  suspend fun <T> collect(
     key: Class<T>,
     block: suspend (T) -> Unit,
   ) {
