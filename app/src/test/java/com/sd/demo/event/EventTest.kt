@@ -53,7 +53,7 @@ class EventTest {
   fun `test flow`() = runTest {
     FEvent.flowOf<String>().test {
       FEvent.post("1")
-      FEvent.post("1")
+      FEvent.emit("1")
       FEvent.post("1")
       assertEquals("1", awaitItem())
       assertEquals("1", awaitItem())

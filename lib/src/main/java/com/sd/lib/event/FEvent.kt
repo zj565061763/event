@@ -17,10 +17,17 @@ object FEvent {
     key: Class<T> = event.javaClass,
   ) {
     withContext(Dispatchers.Main) {
-      @Suppress("UNCHECKED_CAST")
-      val flow = _map[key] as? MutableSharedFlow<T>
-      flow?.emit(event)
+      emitInternal(event, key)
     }
+  }
+
+  internal suspend fun <T : Any> emitInternal(
+    event: T,
+    key: Class<T>,
+  ) {
+    @Suppress("UNCHECKED_CAST")
+    val flow = _map[key] as? MutableSharedFlow<T>
+    flow?.emit(event)
   }
 
   suspend inline fun <reified T> collect(noinline block: suspend (T) -> Unit) = collect(T::class.java, block)
@@ -50,7 +57,7 @@ fun <T : Any> FEvent.post(
 ) {
   @OptIn(DelicateCoroutinesApi::class)
   GlobalScope.launch(Dispatchers.Main) {
-    emit(event, key)
+    emitInternal(event, key)
   }
 }
 
