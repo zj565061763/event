@@ -3,6 +3,7 @@ package com.sd.lib.event
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.channelFlow
@@ -29,7 +30,8 @@ object FEvent {
     key: Class<T>,
     block: suspend (T) -> Unit,
   ) {
-    withContext(Dispatchers.Main) {
+    // 因为大部分收集发生在主线程，所以优先使用Dispatchers.Main.immediate可以减少一次调度
+    withContext(Dispatchers.preferMainImmediate) {
       @Suppress("UNCHECKED_CAST")
       val flow = _map.getOrPut(key) { MutableSharedFlow<T>() } as MutableSharedFlow<T>
       try {
@@ -59,3 +61,7 @@ inline fun <reified T> FEvent.flowOf(): Flow<T> = flowOf(T::class.java)
 fun <T> FEvent.flowOf(key: Class<T>): Flow<T> = channelFlow {
   collect(key) { send(it) }
 }
+
+// 后面可能会迁移到KMP，所以使用runCatching，因为有的平台没有Dispatchers.Main.immediate
+private val Dispatchers.preferMainImmediate: MainCoroutineDispatcher
+  get() = runCatching { Main.immediate }.getOrElse { Main }
